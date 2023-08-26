@@ -1,0 +1,5 @@
+NCLUDE options/options.makejail
+
+ARG jellyfin_tag=13.2
+
+FROM --entrypoint gh+AppJail-makejails/jellyfin jellyfin:${jellyfin_tag}
