@@ -1,4 +1,4 @@
-NCLUDE options/options.makejail
+INCLUDE options/options.makejail
 
 ARG jellyfin_tag=13.2
 
