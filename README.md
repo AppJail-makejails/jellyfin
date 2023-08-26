@@ -24,7 +24,10 @@ Where `options/network.makejail` are the options that suit your environment, for
 ```
 ARG ext_if
 ARG iface=jellyfin
+# Recommended to allow IP reservation on your router.
+ARG macaddr=58-9c-fc-00-00-01
 
+OPTION macaddr=sb_${iface}:${macaddr}
 OPTION bridge=iface:${ext_if} ${iface}
 OPTION dhcp=sb_${iface}
 ```
