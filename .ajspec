@@ -1,7 +1,7 @@
 tags: 13.2
 13.2.arch: amd64
 13.2.name: "jellyfin"
-13.2.timestamp.amd64: 1693679716
-13.2.sum.amd64: 4017a7de7f9ac3c143001150a26d753f23ef30aa3cfce85a3be865df78e1595c
-13.2.size.amd64: 202526612
+13.2.timestamp.amd64: 1694739174
+13.2.sum.amd64: ae1333fbc0848d72c5794bfaaa2ba73ec951ccc92f2a4e41c639a0c1a0ad159c
+13.2.size.amd64: 198086800
 13.2.source.amd64: "http://appjail.hpc.at/jellyfin/13.2-amd64-image.appjail"
