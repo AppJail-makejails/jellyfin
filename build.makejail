@@ -1,3 +1,5 @@
 INCLUDE options/options.makejail
 
 PKG jellyfin
+
+SYSRC jellyfin_enable=YES
