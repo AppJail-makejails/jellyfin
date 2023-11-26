@@ -77,34 +77,7 @@ appjail makejail -j jellyfin -- --ext_if jext
 
 * `jellyfin_tag` (default: `13.2`): see [#tags](#tags).
 
-## How to build the Image
-
-Make any changes you want to your image.
-
-```
-INCLUDE options/network.makejail
-INCLUDE gh+AppJail-makejails/jellyfin --file build.makejail
-```
-
-Build the jail:
-
-```sh
-appjail makejail -j jellyfin
-```
-
-Remove unportable or unnecessary files and directories and export the jail:
-
-```sh
-appjail stop jellyfin
-appjail cmd local jellyfin sh -c "rm -f var/log/*"
-appjail cmd local jellyfin sh -c "rm -f var/cache/pkg/*"
-appjail cmd local jellyfin sh -c "rm -f var/run/*"
-appjail cmd local jellyfin vi etc/rc.conf
-appjail image export jellyfin
-```
-
 ## Tags
-
 
 | Tag        | Arch    | Version        | Type   |
 | ---------- | ------- | -------------- | ------ |
