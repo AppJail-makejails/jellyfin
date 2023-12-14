@@ -1,0 +1,1 @@
+OPTION volume=jellyfin-db mountpoint:/var/db/jellyfin owner:868 group:868
