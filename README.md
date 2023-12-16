@@ -77,6 +77,12 @@ appjail makejail -j jellyfin -- --ext_if jext
 
 * `jellyfin_tag` (default: `13.2`): see [#tags](#tags).
 
+### Volumes
+
+| Name         | Owner | Group | Perm | Type | Mountpoint        |
+| ------------ | ----- | ----- | ---- | ---- | ----------------- |
+| jellyfin-db  | 868   | 868   |  -   |  -   | /var/db/jellyfin  |
+
 ## Tags
 
 | Tag        | Arch    | Version        | Type   |
