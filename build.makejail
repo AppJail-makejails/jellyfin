@@ -2,5 +2,3 @@ INCLUDE options/options.makejail
 INCLUDE options/volumes.makejail
 
 PKG jellyfin
-
-SYSRC jellyfin_enable=YES
