@@ -1,6 +1,6 @@
 INCLUDE options/options.makejail
 
-ARG jellyfin_tag=13.4
+ARG jellyfin_tag=13.5
 ARG jellyfin_ajspec=gh+AppJail-makejails/jellyfin
 
 FROM --entrypoint "${jellyfin_ajspec}" jellyfin:${jellyfin_tag}
