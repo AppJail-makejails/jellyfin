@@ -1,14 +1,15 @@
 tags+: 14.3
 14.3.arch: amd64
 14.3.name: "jellyfin"
-14.3.timestamp.amd64: 1769753343
-14.3.sum.amd64: 6c9d92625d41caac4f37ddb31b0fb681624c5eeb2ed49b0523c47f3e05971d52
-14.3.size.amd64: 578095589
+14.3.timestamp.amd64: 1771576667
+14.3.sum.amd64: ccd01fb9cca65a4e473e72d02250d8e00f4a7ef07ec140ef97b5213ed5dacb01
+14.3.size.amd64: 579080259
 14.3.source.amd64: "http://appjail.hpc.at/jellyfin/14.3-amd64-image.appjail"
 tags+: 15
 15.arch: amd64
 15.name: "jellyfin"
-15.timestamp.amd64: 1769754087
-15.sum.amd64: 859fa6e2121eb44634b2ce657ad765c0399a6eb4c52199ebadbb40037f871c05
-15.size.amd64: 662464721
+15.timestamp.amd64: 1771577438
+15.sum.amd64: f98e487d5afd018cc00bc5d1d824bcaf88c364077ff63a01577ef6573c69a7fd
+15.size.amd64: 664558733
 15.source.amd64: "http://appjail.hpc.at/jellyfin/15-amd64-image.appjail"
+maintenance: "This image is uploading, please wait a moment and try again. If you are importing this image using a Makejail that has the '--<name>_ajspec' argument, you can use the 'reproduce' method to use 'appjail-reproduce'. See 'appjail-image(5)' for details."
