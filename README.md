@@ -4,89 +4,129 @@ Jellyfin is a free and open-source media server and suite of multimedia applicat
 
 wikipedia.org/wiki/Jellyfin
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Jelly-banner-light.svg/1024px-Jelly-banner-light.svg.png" width="30%" height="auto">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Jellyfin-horizontal--color-on-light.svg/1280px-Jellyfin-horizontal--color-on-light.svg.png" width="30%" height="auto" alt="Jellyfin logo">
 
 ## How to use this Makejail
 
-```
-INCLUDE options/network.makejail
-INCLUDE gh+AppJail-makejails/jellyfin
+### Deploy Jellyfin using Virtual Networks
 
-OPTION template=files/jellyfin.conf
-
-CMD --local mkdir -p ${PWD}/media
-MOUNT ${PWD}/media /media
-CMD chown -R jellyfin:jellyfin /media
-```
-
-Where `options/network.makejail` are the options that suit your environment, for example:
-
-```
-ARG ext_if
-ARG iface=jellyfin
-# Recommended to allow IP reservation on your router.
-ARG macaddr=58-9c-fc-00-00-01
-
-OPTION macaddr=sb_${iface}:${macaddr}
-OPTION bridge=iface:${ext_if} ${iface}
-OPTION dhcp=sb_${iface}
+```console
+$ appjail oci run -Pd \
+    -o overwrite=force \
+    -o virtualnet=":<random> default" \
+    -o nat \
+    -o template=template.conf \
+    -o expose="8096" \
+    -o expose="7359 proto:udp" \
+    -o fstab="/path/to/config /var/db/jellyfin" \
+    -o fstab="/path/to/cache /var/cache/jellyfin" \
+    -o fstab="/path/to/media /media" \
+    ghcr.io/appjail-makejails/jellyfin jellyfin
 ```
 
-The `files/jellyfin.conf` template is as follows:
+**template.conf**:
 
 ```
 exec.start: "/bin/sh /etc/rc"
 exec.stop: "/bin/sh /etc/rc.shutdown jail"
 mount.devfs
+persist
 allow.mlock
-devfs_ruleset: 14
+```
+### Deploy Jellyfin using Host Networking
+
+The example above uses [Virtual Networks](https://appjail.readthedocs.io/en/latest/networking/virtual-networks/intro/). Using [host networking](https://appjail.readthedocs.io/en/latest/networking/ip-inherit/) (`-o alias -o ip4_inherit -o ip6_inherit`) is optional but required in order to use DLNA.
+
+```console
+$ appjail oci run -Pd \
+    -o overwrite=force \
+    -o alias \
+    -o ip4_inherit \
+    -o ip6_inherit \
+    -o template=template.conf \
+    -o expose="8096" \
+    -o expose="7359 proto:udp" \
+    -o fstab="/path/to/config /var/db/jellyfin" \
+    -o fstab="/path/to/cache /var/cache/jellyfin" \
+    -o fstab="/path/to/media /media" \
+    ghcr.io/appjail-makejails/jellyfin jellyfin
 ```
 
-A generic ruleset that allows Jellyfin to run smoothly is as follows:
+### Deploy using `appjail-director` (+hardware acceleration)
 
+```yaml
+options:
+  - alias:
+  - ip4_inherit:
+  - ip6_inherit:
+
+services:
+  jellyfin:
+    name: jellyfin
+    makejail: gh+AppJail-makejails/jellyfin
+    options:
+      - template: !ENV '${PWD}/template.conf'
+      - mount_devfs:
+      - device: "path dri unhide"
+      - device: "path 'dri/*' unhide"
+      - device: "path drm unhide"
+      - device: "path 'drm/*' unhide"
+      - device: "path pci unhide"
+      - device: "path 'nvidia*' unhide"
+    volumes:
+      - config: /var/db/jellyfin
+      - cache: /var/cache/jellyfin
+      - media: /media
+    oci:
+      # Optional - alternative address used for autodiscovery
+      environment:
+        - JELLYFIN_PublishedServerUrl: http://example.com
+
+volumes:
+  config:
+    device: /var/appjail-volumes/jellyfin/config
+  cache:
+    device: /var/appjail-volumes/jellyfin/cache
+  media:
+    device: /path/to/media
 ```
-[devfsrules_jellyfin=14]
-add include $devfsrules_hide_all
-add include $devfsrules_unhide_basic
-add include $devfsrules_unhide_login
 
-# DHCP
-add path 'bpf*' unhide
+Since the previous example uses the host networking, you can access Jellyfin via `http://localhost:8096` or your host's IP address.
 
-# 3D support
-add path 'dri' unhide
-add path 'dri/*' unhide
-add path 'drm' unhide
-add path 'drm/*' unhide
-add path 'pci' unhide
-```
+### Arguments (stage: build)
 
-Remember to restart `devfs`:
+* `jellyfin_from` (default: `ghcr.io/appjail-makejails/jellyfin`): Location of OCI image. See also [OCI Configuration](#oci-configuration).
+* `jellyfin_tag` (default: `latest`): OCI image tag. See also [OCI Configuration](#oci-configuration).
 
-```sh
-service devfs restart
-```
+### Environment (OCI image)
 
-Open a shell and run `appjail makejail`:
-
-```sh
-appjail makejail -j jellyfin -- --ext_if jext
-```
-
-### Arguments
-
-* `jellyfin_tag` (default: `14.3`): see [#tags](#tags).
-* `jellyfin_ajspec` (default: `gh+AppJail-makejails/jellyfin`): Entry point where the `appjail-ajspec(5)` file is located.
+* `PGID` (default: `1000`): Equivalent to `PUID` but for the Process Group ID.
+* `PUID` (default: `1000`): Process User ID for the container's main process, allowing you to match the owner of files written to mounted host volumes to your host system's user. Writable volumes are changed based on this environment variable.
 
 ### Volumes
 
-| Name         | Owner | Group | Perm | Type | Mountpoint        |
-| ------------ | ----- | ----- | ---- | ---- | ----------------- |
-| jellyfin-db  | 868   | 868   |  -   |  -   | /var/db/jellyfin  |
+| Name | Owner | Group | Perm | Type | Mountpoint |
+| --- | --- | --- | --- | --- | --- |
+| appjail-d5250a148a-var_cache_jellyfin | `${PUID}` | `${PGID}` | - | - | /var/cache/jellyfin |
+| appjail-dcc8a6f9f1-var_db_jellyfin | `${PUID}` | `${PGID}` | - | - | /var/db/jellyfin |
 
-## Tags
+## OCI Configuration
 
-| Tag        | Arch    | Version        | Type   |
-| ---------- | ------- | -------------- | ------ |
-| `14.3`     | `amd64` | `14.3-RELEASE` | `thin` |
-| `15`     | `amd64` | `15` | `thin` |
+```yaml
+build:
+  variants:
+    - tag: 15.1
+      containerfile: Containerfile
+      aliases: ["latest"]
+      default: true
+      args:
+        JELLYFIN_FFMPEG_VERSION: "8"
+        FREEBSD_RELEASE: "15.1"
+        NO_PKGCLEAN: "1"
+      cache_dirs: ["pkgcache0:/var/cache/pkg"]
+```
+
+## Notes
+
+1. The ideas present in the Docker image of Jellyfin are taken into account for users who are familiar with it.
+2. [jellyfin-ffmpeg](https://github.com/daemonless/jellyfin-ffmpeg) is used instead of [ffmpeg](https://www.freshports.org/multimedia/ffmpeg).

@@ -1,9 +1,6 @@
-INCLUDE options/options.makejail
+ARG jellyfin_from=ghcr.io/appjail-makejails/jellyfin
+ARG jellyfin_tag=latest
 
-ARG jellyfin_tag=14.3
-ARG jellyfin_ajspec=gh+AppJail-makejails/jellyfin
-
-FROM --entrypoint "${jellyfin_ajspec}" jellyfin:${jellyfin_tag}
-
-SYSRC jellyfin_enable=YES
-SERVICE jellyfin start
+OPTION container=boot
+OPTION overwrite=force
+OPTION from=${jellyfin_from}:${jellyfin_tag}
