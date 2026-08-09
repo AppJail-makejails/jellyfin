@@ -120,7 +120,7 @@ build:
       aliases: ["latest"]
       default: true
       args:
-        JELLYFIN_FFMPEG_VERSION: "8"
+        JELLYFIN_FFMPEG_VERSION: "7"
         FREEBSD_RELEASE: "15.1"
         NO_PKGCLEAN: "1"
       cache_dirs: ["pkgcache0:/var/cache/pkg"]
