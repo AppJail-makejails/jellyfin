@@ -65,6 +65,7 @@ services:
     name: jellyfin
     makejail: gh+AppJail-makejails/jellyfin
     options:
+      - container: 'args:--pull'
       - template: !ENV '${PWD}/template.conf'
       - mount_devfs:
       - device: "path dri unhide"
