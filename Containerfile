@@ -17,7 +17,7 @@ LABEL org.opencontainers.image.title="Jellyfin" \
 RUN set -xe; \
     \
     pkg update; \
-    pkg install -U \
+    pkg install \
         jellyfin \
         wqy-fonts \
         zh-CJKUnifonts \
