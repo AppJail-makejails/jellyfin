@@ -131,4 +131,3 @@ build:
 ## Notes
 
 1. The ideas present in the Docker image of Jellyfin are taken into account for users who are familiar with it.
-2. [jellyfin-ffmpeg](https://github.com/daemonless/jellyfin-ffmpeg) is used instead of [ffmpeg](https://www.freshports.org/multimedia/ffmpeg).

@@ -1,7 +1,6 @@
 ARG FREEBSD_RELEASE
 ARG JELLYFIN_FFMPEG_VERSION
 
-FROM ghcr.io/daemonless/jellyfin-ffmpeg:${JELLYFIN_FFMPEG_VERSION} as jellyfin_ffmpeg
 FROM ghcr.io/appjail-makejails/core:${FREEBSD_RELEASE}
 
 ARG JELLYFIN_FFMPEG_VERSION
@@ -28,56 +27,14 @@ RUN set -xe; \
         ja-font-ipa \
         ko-unfonts-core \
         libva \
-        libva-intel-media-driver \
-        gmmlib \
         mesa-dri \
-        libass \
-        libbluray \
-        chromaprint \
-        dav1d \
-        fdk-aac \
-        fontconfig \
-        freetype2 \
-        fribidi \
-        gmp \
-        harfbuzz \
-        lame \
-        libopenmpt \
-        opus \
-        libplacebo \
-        shaderc \
-        svt-av1 \
-        libtheora \
-        libvorbis \
-        libvpx \
-        vulkan-loader \
-        webp \
-        libx264 \
-        x265 \
-        sekrit-twc-zimg \
-        libzvbi \
-        gnutls \
-        libxml2 \
-        libiconv \
-        libva \
-        libdrm \
-        libvdpau \
-        libX11 \
-        alsa-lib \
-        sndio; \
+        jellyfin-ffmpeg${JELLYFIN_FFMPEG_VERSION}
     \
     if [ -z "${NO_PKGCLEAN}" ]; then \
         pkg clean -a; \
         rm -rf /var/cache/pkg/*; \
     fi; \
     rm -rf /var/db/pkg/repos/*
-
-COPY --from=jellyfin_ffmpeg \
-    /usr/local/bin/jellyfin-ffmpeg${JELLYFIN_FFMPEG_VERSION} \
-    /usr/local/bin/jellyfin-ffprobe${JELLYFIN_FFMPEG_VERSION} \
-    /usr/local/bin
-COPY --from=jellyfin_ffmpeg /usr/local/lib/jellyfin-ffmpeg${JELLYFIN_FFMPEG_VERSION} \
-    /usr/local/lib/jellyfin-ffmpeg${JELLYFIN_FFMPEG_VERSION}
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     LC_ALL="en_US.UTF-8" \
