@@ -28,7 +28,7 @@ RUN set -xe; \
         ko-unfonts-core \
         libva \
         mesa-dri \
-        jellyfin-ffmpeg${JELLYFIN_FFMPEG_VERSION}
+        jellyfin-ffmpeg${JELLYFIN_FFMPEG_VERSION}; \
     \
     if [ -z "${NO_PKGCLEAN}" ]; then \
         pkg clean -a; \
